@@ -1,73 +1,52 @@
 const express = require("express");
-const bcrypt = require("bcryptjs");
 const router = express.Router();
+const mw = require("../middleware");
 
 // importing User Model
-const User = require("../models/User");
+const Users = require("../models/userModel");
 
 router.get("/test", (req, res) => {
   res.status(200).json({ message: "Users succesfully works" });
 });
 
-router.post("/register", (req, res) => {
-  User.findOne({ email }).then(user => {
-    if (user) {
-      return res
-        .status(400)
-        .json({ err: "Email already exists please try again" });
+/**
+ * mw.hashPass is middleware that uses bcryptjs to hash the password
+ * Required Fields username, email, password
+ * Returns newly created object
+ */
+router.post("/register", mw.hashPass, async (req, res) => {
+  try {
+    const newUser = new Users({
+      username: req.body.username,
+      email: req.body.email,
+      password: req.body.password
+    });
+
+    // Checks database for existing email address returns error if there is an email
+    const email = await Users.findOne({ email: req.body.email });
+    if (email) {
+      res.status(400).json("Email already exists please try again!");
     } else {
-      const newUser = new User({
-        name: req.body.name,
-        email: req.body.email,
-        password: req.body.password,
-        phone: req.body.phone,
-        photo: req.body.photo,
-        state: req.body.state,
-        city: req.body.city,
-        bio: req.body.bio
-      });
-
-      router.post("/login", (req, res) => {});
-
-      router.get("/", async (req, res) => {
-        try {
-          const data = await "db";
-          res.status(200).json(data);
-        } catch (err) {
-          res.status(500).json(err, "Internal Server Error!");
-        }
-      });
-
-      bcrypt.genSalt(13, (err, salt) => {
-        bcrypt.hash(newUser.password, salt, (err, hash) => {
-          if (err) throw err;
-          newUser.password = hash;
-          newUser
-            .save()
-            .then(user => res.json(user))
-            .catch(err => res.json(err));
-        });
-      });
+      //Saves the new user to the Database
+      const data = await newUser.save();
+      res.status(201).json(data);
     }
-  });
+  } catch (err) {
+    res.status(500).json({ err, message: "Internal Server Error!" });
+  }
 });
 
-router.post("/login", (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
+router.post("/login", mw.authZ, (req, res) => {
+  res.status(202).json({ message: "Logged in Successfully", token: req.token });
+});
 
-  User.findOne({ email }).then(user => {
-    if (!user) {
-      return res.status(404).json({ error: "user not found" });
-    }
-    bcrypt.compare(password, user.password).then(matches => {
-      if (matches) {
-        res.json({ message: "Successfully matched" });
-      } else {
-        return res.status(400).json({ error: "password incorrect" });
-      }
-    });
-  });
+router.get("/", async (req, res) => {
+  try {
+    const data = await "db";
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(err, "Internal Server Error!");
+  }
 });
 
 module.exports = router;
