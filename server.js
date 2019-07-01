@@ -26,8 +26,4 @@ server.get("/", (req, res) => {
 
 server.use("/api/users", users);
 
-const port = process.env.PORT || 9000;
-
-server.listen(port, () => console.log(`Port ${port} is live`));
-
 module.exports = server;
