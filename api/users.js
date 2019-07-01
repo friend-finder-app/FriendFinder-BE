@@ -12,3 +12,12 @@ router.get("/test", (req, res) => {
 router.post("/register", (req, res) => {});
 
 router.post("/login", (req, res) => {});
+
+router.get("/", async (req, res) => {
+  try {
+    const data = await "db";
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(err, "Internal Server Error!");
+  }
+});
