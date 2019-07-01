@@ -18,10 +18,10 @@ const UserSchema = new Schema({
     type: Number,
     required: true
   },
-  //   photo: {
-  //     type: BSONRegexp,
-  //     required: true
-  //   },
+  photo: {
+    type: BSONRegexp,
+    required: true
+  },
   state: {
     type: String,
     required: true
@@ -36,4 +36,4 @@ const UserSchema = new Schema({
   }
 });
 
-module.exports = User = mongoose.model("users", UserSchema);
+module.exports = User = mongoose.model("Friendfinder.user", UserSchema);

@@ -10,7 +10,7 @@ router.get("/test", (req, res) => {
 });
 
 router.post("/register", (req, res) => {
-  User.findOne({ email }).then(user => {
+  User.findOne({ email: req.body.email }).then(user => {
     if (user) {
       return res
         .status(400)
@@ -29,7 +29,9 @@ router.post("/register", (req, res) => {
 
       bcrypt.genSalt(13, (err, salt) => {
         bcrypt.hash(newUser.password, salt, (err, hash) => {
-          if (err) throw err;
+          if (err) {
+            return res.json(err);
+          }
           newUser.password = hash;
           newUser
             .save()
