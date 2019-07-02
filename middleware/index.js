@@ -22,6 +22,7 @@ const authZ = async (req, res, next) => {
     }
     if (user && bcrypt.compareSync(password, user.password)) {
       const token = jwt.generateToken(user);
+      req.user_id = user._id;
       req.token = token;
       next();
     } else {

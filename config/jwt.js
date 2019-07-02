@@ -7,7 +7,7 @@ const secretKey = "super secret" || process.env.SECRET;
 
 function generateToken(user) {
   const payload = {
-    id: user.id,
+    id: user._id,
     s: user.username
   };
 

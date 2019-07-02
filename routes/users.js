@@ -87,7 +87,13 @@ router.post(
  * Middleware: `authZ` validates the user's credentials
  */
 router.post("/login", mw.authZ, (req, res) => {
-  res.status(202).json({ message: "Logged in Successfully", token: req.token });
+  res
+    .status(202)
+    .json({
+      message: "Logged in Successfully",
+      token: req.token,
+      id: req.user_id
+    });
 });
 
 /**
