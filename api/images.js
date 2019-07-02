@@ -31,27 +31,26 @@ const upload = multer({
 
 //Stores image in uploads folder
 //Using multer and creates a ref to the file
-router.post("/uploadmulter", upload.single("imageData"), (req, res, next) => {
-  console.log(req.body, "fffdsfa");
-  const newImage = new Image({
-    imageName: req.body.imageName,
-    imageData: req.file.path
-  });
-
-  newImage
-    .save()
-    .then(res => {
-      console.log(res);
-      res.status(200).json({
-        success: true,
-        document: res
-      });
-    })
-    .catch(err => {
-      console.log("I made an error");
-      next(err);
+router.post(
+  "/uploadmulter",
+  upload.single("imageData"),
+  async (req, res, next) => {
+    console.log(req.body, "fffdsfa");
+    const newImage = new Image({
+      imageName: req.body.imageName,
+      imageData: req.file.path
     });
-});
+
+    try {
+      const imageUp = await newImage.save();
+      res.status(200).json(imageUp);
+    } catch (err) {
+      res.status({
+        message: "Error in uploading image"
+      });
+    }
+  }
+);
 
 // router.route("/uploadBase").post((req, res, next) => {
 //   const newImage = new Image({
