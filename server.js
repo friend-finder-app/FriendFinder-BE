@@ -4,8 +4,8 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 
-// const users = require("./api/users");
-const imagesRouter = require("./api/images.js");
+//Routes
+const users = require("./routes/users");
 
 const db = require("./config/keys.js").mongoURI;
 
@@ -14,6 +14,8 @@ server.use(helmet());
 server.use(cors());
 server.use(express.json());
 
+//Setting up headers for img-uploading..
+//Dont actually know what it does tbh
 server.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.header(
@@ -24,8 +26,8 @@ server.use((req, res, next) => {
   res.header("Access-Control-Allow-Methods", "*"); // enables all the methods to take place
   return next();
 });
-server.use("/uploads", express.static("./uploads"));
 
+// Connect to MongoDB
 mongoose
   .connect(db, { useNewUrlParser: true })
   .then(() => {
@@ -40,8 +42,10 @@ server.get("/", (req, res) => {
   res.status(200).json("I'm Alive");
 });
 
-server.use("/images", imagesRouter);
+//This is where images are uploaded
+server.use("/uploads", express.static("./uploads"));
 
-// server.use("/api/users", users);
+//User Route
+server.use("/api/users", users);
 
 module.exports = server;

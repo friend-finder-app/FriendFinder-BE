@@ -53,7 +53,7 @@ class App extends Component {
       });
 
       axios
-        .post(`${API_URL}/images/uploadmulter`, imageFormObj)
+        .post(`${API_URL}/api/users/register`, imageFormObj)
         .then(data => {
           if (data) {
             alert("Image has been successfully uploaded using multer");
