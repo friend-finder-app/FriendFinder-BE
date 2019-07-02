@@ -1,25 +1,29 @@
 const express = require("express");
-const router = express.Router();
 const mw = require("../middleware");
+
+const router = express.Router();
 
 // importing User Model
 const Users = require("../models/userModel");
 
-router.get("/test", (req, res) => {
-  res.status(200).json({ message: "Users succesfully works" });
-});
-
 /**
- * mw.hashPass is middleware that uses bcryptjs to hash the password
- * Required Fields username, email, password
- * Returns newly created object
+ * Method: POST
+ * Requires: `req.body: email`, `req.body: password`, `req.body: username`
+ * Returns: newly inserted user object
+ * Middleware: `hashPass` hashes user's password
  */
 router.post("/register", mw.hashPass, async (req, res) => {
   try {
     const newUser = new Users({
       username: req.body.username,
       email: req.body.email,
-      password: req.body.password
+      password: req.body.password,
+      phone: req.body.phone,
+      state: req.body.state,
+      city: req.body.city,
+      bio: req.body.bio,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName
     });
 
     // Checks database for existing email address returns error if there is an email
@@ -36,13 +40,25 @@ router.post("/register", mw.hashPass, async (req, res) => {
   }
 });
 
+/**
+ * Method: POST
+ * Requires: `Req.body: email`, `Req.body: password`
+ * Returns: Json Token if user logs in successfully
+ * Middleware: `authZ` validates the user's credentials
+ */
 router.post("/login", mw.authZ, (req, res) => {
   res.status(202).json({ message: "Logged in Successfully", token: req.token });
 });
 
+/**
+ * Method: GET
+ * Requires: Json WebToken in `Req.Header`
+ * Returns: List of Users in the database
+ * Middleware: `protectedRoute` checks to see if client sends token in the header
+ */
 router.get("/", async (req, res) => {
   try {
-    const data = await "db";
+    const data = await Users.find();
     res.status(200).json(data);
   } catch (err) {
     res.status(500).json(err, "Internal Server Error!");
