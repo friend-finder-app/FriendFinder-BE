@@ -87,13 +87,11 @@ router.post(
  * Middleware: `authZ` validates the user's credentials
  */
 router.post("/login", mw.authZ, (req, res) => {
-  res
-    .status(202)
-    .json({
-      message: "Logged in Successfully",
-      token: req.token,
-      id: req.user_id
-    });
+  res.status(202).json({
+    message: "Logged in Successfully",
+    token: req.token,
+    id: req.user_id
+  });
 });
 
 /**
@@ -198,7 +196,7 @@ router.put("/:id/acceptfriend", mw.protectedRoute, async (req, res) => {
     });
 
     let newfrendRequest = [...checkFriendRequest];
-    //const removeUser = lo
+
     console.log(checkFriendRequest, "check friend request");
     loggedInUser.friendRequest = newfrendRequest;
     console.log(loggedInUser.friendRequest);

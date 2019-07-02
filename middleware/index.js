@@ -34,16 +34,17 @@ const authZ = async (req, res, next) => {
   }
 };
 
+//Using JWT not jwt.js --- Check if this affects anything - Roenz
 const protectedRoute = (req, res, next) => {
   const token = req.headers["token"];
   console.log(token);
   JWT.verify(token, jwt.secretKey, (err, decoded) => {
     console.log("i made it here");
-    if (err)
+    if (err) {
       return res
         .status(500)
         .send({ authed: false, message: "The token could not be verified " });
-    // req.username = decoded.name;
+    }
     req.id = decoded.id;
     next();
   });
