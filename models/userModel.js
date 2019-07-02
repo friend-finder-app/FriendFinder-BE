@@ -41,22 +41,21 @@ const UserSchema = new Schema({
     type: Number,
     required: true
   },
-  dateOfBirth: {
-    type: Date,
-    required: true
-  },
+  // dateOfBirth: {
+  //   type: Date,
+  //   required: true
+  // },
   hobbies: {
     type: [String]
   },
   imageName: {
     type: String,
     default: "none",
-    required: true
+    required: false
   },
   imageData: {
     type: String,
-    required: true
-
+    required: false
   }
 });
 
