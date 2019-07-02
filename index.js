@@ -1,5 +1,5 @@
-//const PORT = 3300 || process.env.PORT;
+const PORT = process.env.PORT || 3300;
 
 const server = require("./server.js");
 
-server.listen(process.env.PORT || 3300)
+server.listen( PORT, "0.0.0.0")
