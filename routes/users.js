@@ -8,23 +8,14 @@ const Users = require("../models/userModel");
 
 /**
  * Method: POST
- * Requires: `req.body: email`, `req.body: password`, `req.body: username`
+ * Endpoint: /api/users/register
+ * Requires: `req.body: email`, `req.body: password`, `req.body: username`, `etc...`
  * Returns: newly inserted user object
  * Middleware: `hashPass` hashes user's password
  */
 router.post("/register", mw.hashPass, async (req, res) => {
   try {
-    const newUser = new Users({
-      username: req.body.username,
-      email: req.body.email,
-      password: req.body.password,
-      phone: req.body.phone,
-      state: req.body.state,
-      city: req.body.city,
-      bio: req.body.bio,
-      firstName: req.body.firstName,
-      lastName: req.body.lastName
-    });
+    const newUser = new Users(req.body);
 
     // Checks database for existing email address returns error if there is an email
     const email = await Users.findOne({ email: req.body.email });
@@ -42,7 +33,8 @@ router.post("/register", mw.hashPass, async (req, res) => {
 
 /**
  * Method: POST
- * Requires: `Req.body: email`, `Req.body: password`
+ * Endpoint: /api/users/login
+ * Requires: `req.body: email`, `req.body: password`
  * Returns: Json Token if user logs in successfully
  * Middleware: `authZ` validates the user's credentials
  */
@@ -52,7 +44,8 @@ router.post("/login", mw.authZ, (req, res) => {
 
 /**
  * Method: GET
- * Requires: Json WebToken in `Req.Header`
+ * Endpoint: /api/users/
+ * Requires: Json WebToken in `req.header`
  * Returns: List of Users in the database
  * Middleware: `protectedRoute` checks to see if client sends token in the header
  */
@@ -60,6 +53,55 @@ router.get("/", mw.protectedRoute, async (req, res) => {
   try {
     const data = await Users.find();
     res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(err, "Internal Server Error!");
+  }
+});
+
+/**
+ * Method: GET
+ * Endpoint: /api/users/:id
+ * Requires: Json WebToken in `req.header`
+ * Returns: A user with the specified ID
+ * Middleware: `protectedRoute` checks to see if client sends token in the header
+ */
+router.get("/:id", mw.protectedRoute, async (req, res) => {
+  try {
+    const data = await Users.findById(req.params.id);
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(err, "Internal Server Error!");
+  }
+});
+
+/**
+ * Method: DELETE
+ * Endpoint: /api/users/:id
+ * Requires: Json WebToken in `req.header`
+ * Returns: Removes the specified user from the database
+ * Middleware: `protectedRoute` checks to see if client sends token in the header
+ */
+router.delete("/:id", mw.protectedRoute, async (req, res) => {
+  try {
+    const data = await Users.remove(req.params.id);
+    res.status(200).json(data);
+  } catch (err) {
+    res.status(500).json(err, "Internal Server Error!");
+  }
+});
+
+/**
+ * Method: PATCH
+ * Endpoint: /api/users/:id
+ * Requires: Json WebToken in `req.header` and `req.body`
+ * Returns: Removes the specified user from the database
+ * Middleware: `protectedRoute` checks to see if client sends token in the header
+ */
+router.patch("/:id", mw.protectedRoute, async (req, res) => {
+  try {
+    const updates = req.body;
+    const data = await Users.updateOne({ _id: req.params.id }, updates);
+    res.status(202).json(data);
   } catch (err) {
     res.status(500).json(err, "Internal Server Error!");
   }

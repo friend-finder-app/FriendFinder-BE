@@ -18,10 +18,6 @@ const UserSchema = new Schema({
     type: Number,
     required: true
   },
-  // photo: {
-  //   type: String,
-  //   required: true
-  // },
   state: {
     type: String,
     required: true
@@ -31,8 +27,7 @@ const UserSchema = new Schema({
     required: true
   },
   bio: {
-    type: String,
-    required: true
+    type: String
   },
   firstName: {
     type: String,
@@ -41,6 +36,23 @@ const UserSchema = new Schema({
   lastName: {
     type: String,
     required: true
+  },
+  age: {
+    type: Number,
+    required: true
+  },
+  dateOfBirth: {
+    type: Date,
+    required: true
+  },
+  hobbies: {
+    type: [String]
+  },
+  profile_pic: {
+    type: String
+  },
+  pics: {
+    type: [String]
   }
 });
 
