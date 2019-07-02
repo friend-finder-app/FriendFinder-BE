@@ -43,7 +43,7 @@ const upload = multer({
  */
 router.post(
   "/register",
-  upload.single("imageData"),
+  // upload.single("imageData"),
   mw.hashPass,
   async (req, res) => {
     try {
@@ -58,9 +58,9 @@ router.post(
         bio: req.body.bio,
         age: req.body.age,
         firstName: req.body.firstName,
-        lastName: req.body.lastName,
-        imageName: req.body.imageName,
-        imageData: req.file.path
+        lastName: req.body.lastName
+        // imageName: req.body.imageName,
+        // imageData: req.file.path
       });
       console.log(req.body);
 
