@@ -112,9 +112,17 @@ router.get("/", mw.protectedRoute, async (req, res) => {
  * Returns: A user with the specified ID
  * Middleware: `protectedRoute` checks to see if client sends token in the header
  */
-router.get("/:id", mw.protectedRoute, async (req, res) => {
+// router.get("/:id", mw.protectedRoute, async (req, res) => {
+//   try {
+//     const data = await Users.findById(req.params.id);
+//     res.status(200).json(data);
+//   } catch (err) {
+//     res.status(500).json(err, "Internal Server Error!");
+//   }
+// });
+router.get("/currentUser", mw.protectedRoute, async (req, res) => {
   try {
-    const data = await Users.findById(req.params.id);
+    const data = await Users.findById(req.id);
     res.status(200).json(data);
   } catch (err) {
     res.status(500).json(err, "Internal Server Error!");
@@ -154,4 +162,54 @@ router.patch("/:id", mw.protectedRoute, async (req, res) => {
   }
 });
 
+//Post friend request to other user
+router.post("/friendRequest/:id", mw.protectedRoute, async (req, res) => {
+  console.log(req.params.id);
+  try {
+    const currentUser = await Users.findById(req.id);
+    const newUser = await Users.findById(req.params.id);
+    newUser.friendRequest.push(currentUser._id);
+    newUser.save();
+    console.log(newUser);
+    res.status(200).json(newUser);
+  } catch (err) {
+    err;
+  }
+});
+
+// router.delete("/friendRequest/:id", mw.protectedRoute, async (req, res) => {});
+
+router.put("/:id/acceptfriend", mw.protectedRoute, async (req, res) => {
+  console.log("hitt here");
+  try {
+    console.log("start");
+    const otherUser = await Users.findById(req.params.id);
+    const loggedInUser = await Users.findById(req.id);
+    console.log(loggedInUser.friendRequest, "user fr request");
+    const checkFriendRequest = loggedInUser.friendRequest.filter((e, i) => {
+      return e._id === otherUser._id;
+    });
+
+    let newfrendRequest = [...checkFriendRequest];
+    //const removeUser = lo
+    console.log(checkFriendRequest, "check friend request");
+    loggedInUser.friendRequest = newfrendRequest;
+    console.log(loggedInUser.friendRequest);
+    loggedInUser.friends.push(otherUser._id);
+    otherUser.friends.push(loggedInUser._id);
+    loggedInUser.save();
+    otherUser.save();
+    console.log("----- testing---- ");
+
+    console.log(loggedInUser.friendsRequest, "friend request list");
+    console.log(loggedInUser.friends, "friends list");
+
+    res.status(200).json({ msg: "success" });
+  } catch (err) {
+    console.log("error here");
+    err;
+  }
+});
+// router.post("/match");
+// router.post("/friends");
 module.exports = router;

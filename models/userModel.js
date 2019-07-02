@@ -4,46 +4,46 @@ const Schema = mongoose.Schema;
 const UserSchema = new Schema({
   username: {
     type: String,
-    required: true
+    required: false
   },
   email: {
     type: String,
-    required: true
+    required: false
   },
   password: {
     type: String,
-    required: true
+    required: false
   },
   phone: {
     type: Number,
-    required: true
+    required: false
   },
   state: {
     type: String,
-    required: true
+    required: false
   },
   city: {
     type: String,
-    required: true
+    required: false
   },
   bio: {
     type: String
   },
   firstName: {
     type: String,
-    required: true
+    required: false
   },
   lastName: {
     type: String,
-    required: true
+    required: false
   },
   age: {
     type: Number,
-    required: true
+    required: false
   },
   dateOfBirth: {
     type: Date,
-    required: true
+    required: false
   },
   hobbies: {
     type: [String]
@@ -51,13 +51,36 @@ const UserSchema = new Schema({
   imageName: {
     type: String,
     default: "none",
-    required: true
+    required: false
   },
   imageData: {
     type: String,
-    required: true
-
-  }
+    required: false
+  },
+  friendRequest: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      }
+    }
+  ],
+  friends: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      }
+    }
+  ],
+  matched: [
+    {
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      }
+    }
+  ]
 });
 
 module.exports = mongoose.model("Users", UserSchema);
