@@ -1,10 +1,38 @@
 const express = require("express");
 const mw = require("../middleware");
+const multer = require("multer");
 
 const router = express.Router();
 
 // importing User Model
 const Users = require("../models/userModel");
+
+//This is used for uploading photos into user accounts
+const storage = multer.diskStorage({
+  destination: function(req, file, cb) {
+    cb(null, "./uploads/");
+  },
+  filename: function(req, file, cb) {
+    cb(null, Date.now() + file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
+    cb(null, true);
+  } else {
+    //rejects storing a file
+    cb(null, false);
+  }
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 1024 * 1024 * 5
+  },
+  fileFilter: fileFilter
+});
 
 /**
  * Method: POST
@@ -13,23 +41,42 @@ const Users = require("../models/userModel");
  * Returns: newly inserted user object
  * Middleware: `hashPass` hashes user's password
  */
-router.post("/register", mw.hashPass, async (req, res) => {
-  try {
-    const newUser = new Users(req.body);
+router.post(
+  "/register",
+  // mw.hashPass,
+  upload.single("imageData"),
+  async (req, res) => {
+    try {
+      const newUser = new Users({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password,
+        phone: req.body.phone,
+        state: req.body.state,
+        city: req.body.city,
+        bio: req.body.bio,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        imageName: req.body.imageName,
+        imageData: req.file.path
+      });
 
-    // Checks database for existing email address returns error if there is an email
-    const email = await Users.findOne({ email: req.body.email });
-    if (email) {
-      res.status(400).json("Email already exists please try again!");
-    } else {
-      //Saves the new user to the Database
-      const data = await newUser.save();
-      res.status(201).json(data);
+      console.log("The is the req.body", req.body);
+
+      // Checks database for existing email address returns error if there is an email
+      const email = await Users.findOne({ email: req.body.email });
+      if (email) {
+        res.status(400).json("Email already exists please try again!");
+      } else {
+        //Saves the new user to the Database
+        const data = await newUser.save();
+        res.status(201).json(data);
+      }
+    } catch (err) {
+      res.status(500).json({ err, message: "Internal Server Error!" });
     }
-  } catch (err) {
-    res.status(500).json({ err, message: "Internal Server Error!" });
   }
-});
+);
 
 /**
  * Method: POST

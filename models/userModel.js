@@ -48,11 +48,15 @@ const UserSchema = new Schema({
   hobbies: {
     type: [String]
   },
-  profile_pic: {
-    type: String
+  imageName: {
+    type: String,
+    default: "none",
+    required: true
   },
-  pics: {
-    type: [String]
+  imageData: {
+    type: String,
+    required: true
+
   }
 });
 
