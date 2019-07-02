@@ -18,10 +18,6 @@ const UserSchema = new Schema({
     type: Number,
     required: true
   },
-  // photo: {
-  //   type: String,
-  //   required: true
-  // },
   state: {
     type: String,
     required: true
@@ -39,6 +35,15 @@ const UserSchema = new Schema({
     required: true
   },
   lastName: {
+    type: String,
+    required: true
+  },
+  imageName: {
+    type: String,
+    default: "none",
+    required: true
+  },
+  imageData: {
     type: String,
     required: true
   }
