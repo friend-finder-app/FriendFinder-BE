@@ -43,7 +43,7 @@ server.get("/", (req, res) => {
 });
 
 //This is where images are uploaded
-server.use("/uploads", express.static("./uploads"));
+server.use(express.static("./uploads"));
 
 //User Route
 server.use("/api/users", users);

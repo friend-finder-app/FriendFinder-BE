@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
     cb(null, "./uploads/");
   },
   filename: function(req, file, cb) {
-    cb(null, Date.now() + file.originalname);
+    cb(null, new Date().toISOString() + file.originalname);
   }
 });
 
@@ -43,10 +43,11 @@ const upload = multer({
  */
 router.post(
   "/register",
-  // mw.hashPass,
   upload.single("imageData"),
+  mw.hashPass,
   async (req, res) => {
     try {
+      // const newUser = new Users(req.body);
       const newUser = new Users({
         username: req.body.username,
         email: req.body.email,
@@ -55,13 +56,13 @@ router.post(
         state: req.body.state,
         city: req.body.city,
         bio: req.body.bio,
+        age: req.body.age,
         firstName: req.body.firstName,
         lastName: req.body.lastName,
         imageName: req.body.imageName,
         imageData: req.file.path
       });
-
-      console.log("The is the req.body", req.body);
+      console.log(req.body);
 
       // Checks database for existing email address returns error if there is an email
       const email = await Users.findOne({ email: req.body.email });
