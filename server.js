@@ -29,7 +29,7 @@ server.use((req, res, next) => {
 
 // Connect to MongoDB
 mongoose
-  .connect(db, { useNewUrlParser: true })
+  .connect(process.env.MONGODB_URI || db, { useNewUrlParser: true })
   .then(() => {
     console.log("MongoDB Connected");
   })
