@@ -56,7 +56,7 @@ router.post("/login", mw.authZ, (req, res) => {
  * Returns: List of Users in the database
  * Middleware: `protectedRoute` checks to see if client sends token in the header
  */
-router.get("/", async (req, res) => {
+router.get("/", mw.protectedRoute, async (req, res) => {
   try {
     const data = await Users.find();
     res.status(200).json(data);
