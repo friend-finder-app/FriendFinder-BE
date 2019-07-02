@@ -31,8 +31,8 @@ const upload = multer({
 
 //Stores image in uploads folder
 //Using multer and creates a ref to the file
-router.post("/", upload.single("imageData"), (req, res, next) => {
-  console.log(req.body);
+router.post("/uploadmulter", upload.single("imageData"), (req, res, next) => {
+  console.log(req.body, "fffdsfa");
   const newImage = new Image({
     imageName: req.body.imageName,
     imageData: req.file.path
@@ -48,6 +48,7 @@ router.post("/", upload.single("imageData"), (req, res, next) => {
       });
     })
     .catch(err => {
+      console.log("I made an error");
       next(err);
     });
 });
