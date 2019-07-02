@@ -33,7 +33,7 @@ const authZ = async (req, res, next) => {
 };
 
 const protectedRoute = (req, res, next) => {
-  const token = jwt.verify(req.headers.token);
+  const token = jwt.verifyToken(req.headers.token);
   if (token) {
     next();
   } else {
