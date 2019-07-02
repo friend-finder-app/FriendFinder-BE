@@ -3,7 +3,7 @@ const helmet = require("helmet");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
-const users = require("./api/users");
+const users = require("./routes/users");
 
 const db = require("./config/keys.js").mongoURI;
 
