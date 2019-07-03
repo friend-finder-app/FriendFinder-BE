@@ -208,8 +208,8 @@ router.get('/match/people', mw.protectedRoute, async (req, res) => {
             if (err) reject(err)
 
             console.log('calculated distance ',data.distance);
-
-            resolve({...user._doc, distance :data.distance})
+            const test = data.distance.split('.')         
+            resolve({...user._doc, distance :test[0]})
 
         });
 
@@ -220,8 +220,9 @@ router.get('/match/people', mw.protectedRoute, async (req, res) => {
     console.log('updated distance before promise ', updatedDistance)
     Promise.all(updatedDistance)
     .then(users => {
-      console.log('updated distance ',users)
-      res.status(200).json(users)
+      let filter = users.filter(user => { return user.distance <= 50 })
+      console.log(filter)
+      res.status(200).json(filter)
     })
     .catch(error => console.log(error))      
 
