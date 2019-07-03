@@ -1,6 +1,7 @@
 const express = require("express");
 const mw = require("../middleware");
 const multer = require("multer");
+const googleDistance = require('google-distance-matrix')
 
 const router = express.Router();
 
@@ -8,6 +9,17 @@ const router = express.Router();
 const Users = require("../models/userModel");
 // const Image = require("../models/image");
 
+<<<<<<< HEAD
+//This is used for uploading photos into user accounts
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, new Date().toISOString() + file.originalname);
+  }
+});
+=======
 // //This is used for uploading photos into user accounts
 // const storage = multer.diskStorage({
 //   destination: function(req, file, cb) {
@@ -17,6 +29,7 @@ const Users = require("../models/userModel");
 //     cb(null, new Date().toISOString() + file.originalname);
 //   }
 // });
+>>>>>>> 9d30b29c5189dc5ff7e0282b7c87139a36d6976f
 
 // const fileFilter = (req, file, cb) => {
 //   if (file.mimetype === "image/jpeg" || file.mimetype === "image/png") {
@@ -59,7 +72,8 @@ router.post(
         bio: req.body.bio,
         age: req.body.age,
         firstName: req.body.firstName,
-        lastName: req.body.lastName
+        lastName: req.body.lastName,
+        hobbies: req.body.hobbies
         // imageName: req.body.imageName,
         // imageData: req.file.path
       });
@@ -170,6 +184,35 @@ router.patch("/:id", mw.protectedRoute, async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
+/**
+ * Method: MATCH
+ * Endpoint: /api/users/match
+ * Requires: Json WebToken in `req.header` and `req.body`
+ * Returns: Removes the specified user from the database
+ * Middleware: `protectedRoute` checks to see if client sends token in the header
+ */
+router.get('/match/people', mw.protectedRoute, async (req, res) => {
+  try {
+
+    let users = await Users.find({ hobbies: { "$in": ["read"] } })
+    res.status(200).json(users)
+  }
+  catch (error) {
+    console.log(error)
+  }
+
+})
+
+
+
+
+
+
+
+
+
+=======
 //Post friend request to other user
 router.post("/friendRequest/:id", mw.protectedRoute, async (req, res) => {
   console.log(req.params.id);
@@ -220,4 +263,5 @@ router.put("/:id/acceptfriend", mw.protectedRoute, async (req, res) => {
 });
 // router.post("/match");
 // router.post("/friends");
+>>>>>>> 9d30b29c5189dc5ff7e0282b7c87139a36d6976f
 module.exports = router;
