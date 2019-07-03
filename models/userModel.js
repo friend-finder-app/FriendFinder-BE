@@ -40,22 +40,18 @@ const UserSchema = new Schema({
   age: {
     type: Number,
     required: false
-<<<<<<< HEAD
-=======
   },
   dateOfBirth: {
     type: Date,
     required: false
->>>>>>> 9d30b29c5189dc5ff7e0282b7c87139a36d6976f
   },
   hobbies: {
     type: [String]
   },
-<<<<<<< HEAD
   distance: {
     type: String,
     default:''
-  }
+  },
   // imageName: {
   //   type: String,
   //   default: "none",
@@ -65,7 +61,6 @@ const UserSchema = new Schema({
   //   type: String,
   //   required: false
   // }
-=======
   // imageName: [
   //   {
   //     type: String,
@@ -104,7 +99,6 @@ const UserSchema = new Schema({
       }
     }
   ]
->>>>>>> 9d30b29c5189dc5ff7e0282b7c87139a36d6976f
 });
 
 module.exports = mongoose.model("Users", UserSchema);
