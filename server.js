@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 
 //Routes
 const users = require("./routes/users");
+const images = require("./routes/images");
 
 const db = require("./config/keys.js").mongoURI;
 
@@ -45,7 +46,8 @@ server.get("/", (req, res) => {
 //This is where images are uploaded
 server.use("/uploads", express.static("uploads"));
 
-//User Route
+//Routes
 server.use("/api/users", users);
+server.use("/api", images);
 
 module.exports = server;

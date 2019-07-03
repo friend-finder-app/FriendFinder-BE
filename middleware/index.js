@@ -23,7 +23,8 @@ const authZ = async (req, res, next) => {
     }
     if (user && bcrypt.compareSync(password, user.password)) {
       const token = jwt.generateToken(user);
-      req.user_id = user._id;
+      console.log(token);
+      req.user_id = user.id;
       req.token = token;
       next();
     } else {
@@ -37,15 +38,16 @@ const authZ = async (req, res, next) => {
 //Using JWT not jwt.js --- Check if this affects anything - Roenz
 const protectedRoute = (req, res, next) => {
   const token = req.headers["token"];
-  console.log(token);
+  console.log(token, "token");
   JWT.verify(token, jwt.secretKey, (err, decoded) => {
-    console.log("i made it here");
+    console.log("i made it here protected router middleware");
     if (err) {
       return res
         .status(500)
         .send({ authed: false, message: "The token could not be verified " });
     }
-    req.id = decoded.id;
+    req.user_id = decoded.id;
+    console.log(req.user_id, `ids im trying to console log`);
     next();
   });
 };

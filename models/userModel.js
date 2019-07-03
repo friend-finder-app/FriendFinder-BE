@@ -48,19 +48,20 @@ const UserSchema = new Schema({
   hobbies: {
     type: [String]
   },
-  imageName: [
-    {
-      type: String,
-      default: "none",
-      required: false
-    }
-  ],
-  imageData: [
-    {
-      type: String,
-      required: false
-    }
-  ],
+  // imageName: [
+  //   {
+  //     type: String,
+  //     default: "none",
+  //     required: false
+  //   }
+  // ],
+  // imageData: [
+  //   {
+  //     type: String,
+  //     required: false
+  //   }
+  // ],
+  images: [],
   friendRequest: [
     {
       user: {
