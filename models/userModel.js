@@ -31,15 +31,15 @@ const UserSchema = new Schema({
   },
   firstName: {
     type: String,
-    required: true
+    required: false
   },
   lastName: {
     type: String,
-    required: true
+    required: false
   },
   age: {
     type: Number,
-    required: true
+    required: false
   },
   // dateOfBirth: {
   //   type: Date,
@@ -47,6 +47,10 @@ const UserSchema = new Schema({
   // },
   hobbies: {
     type: [String]
+  },
+  distance: {
+    type: String,
+    default:''
   }
   // imageName: {
   //   type: String,
