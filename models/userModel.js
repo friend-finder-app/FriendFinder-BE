@@ -50,8 +50,30 @@ const UserSchema = new Schema({
   },
   distance: {
     type: String,
-    default: ""
+    default:''
   },
+  // imageName: {
+  //   type: String,
+  //   default: "none",
+  //   required: false
+  // },
+  // imageData: {
+  //   type: String,
+  //   required: false
+  // }
+  // imageName: [
+  //   {
+  //     type: String,
+  //     default: "none",
+  //     required: false
+  //   }
+  // ],
+  // imageData: [
+  //   {
+  //     type: String,
+  //     required: false
+  //   }
+  // ],
   images: [],
   friendRequest: [
     {

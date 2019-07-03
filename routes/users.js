@@ -1,7 +1,9 @@
 const express = require("express");
 const mw = require("../middleware");
 const multer = require("multer");
+
 const googleDistance = require("google-distance-matrix");
+
 
 const router = express.Router();
 
@@ -11,10 +13,12 @@ const Users = require("../models/userModel");
 
 //This is used for uploading photos into user accounts
 const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
+
+  destination: function (req, file, cb) {
     cb(null, "./uploads/");
   },
-  filename: function(req, file, cb) {
+  filename: function (req, file, cb) {
+
     cb(null, new Date().toISOString() + file.originalname);
   }
 });
@@ -181,22 +185,24 @@ router.patch("/:id", mw.protectedRoute, async (req, res) => {
   }
 });
 
-//Post friend request to other user
-router.post("/friendRequest/:id", mw.protectedRoute, async (req, res) => {
-  console.log(req.params.id);
+/**
+ * Method: MATCH
+ * Endpoint: /api/users/match
+ * Requires: Json WebToken in `req.header` and `req.body`
+ * Returns: Removes the specified user from the database
+ * Middleware: `protectedRoute` checks to see if client sends token in the header
+ */
+router.get('/match/people', mw.protectedRoute, async (req, res) => {
   try {
-    const currentUser = await Users.findById(req.id);
-    const newUser = await Users.findById(req.params.id);
-    newUser.friendRequest.push(currentUser._id);
-    newUser.save();
-    console.log(newUser);
-    res.status(200).json(newUser);
-  } catch (err) {
-    err;
-  }
-});
 
-// router.delete("/friendRequest/:id", mw.protectedRoute, async (req, res) => {});
+    let users = await Users.find({ hobbies: { "$in": ["read"] } })
+    res.status(200).json(users)
+  }
+  catch (error) {
+    console.log(error)
+  }
+
+})
 
 router.put("/:id/acceptfriend", mw.protectedRoute, async (req, res) => {
   console.log("hitt here");
@@ -266,5 +272,27 @@ router.get(
     }
   }
 );
+
+router.get('/getAllFriends/friends',mw.protectedRoute, async (req, res) => {
+  try{
+    let user = await Users.findById(req.user_id)
+    res.status(200).json(user.friends)
+  }
+  catch (error) {
+    console.log(error)
+  }
+})
+
+router.get('/getAllFriendsRequests/friends',mw.protectedRoute, async (req, res) => {
+  try{
+    let user = await Users.findById(req.user_id)
+    res.status(200).json(user.friendRequest)
+  }
+  catch (error) {
+    console.log(error)
+  }
+})
+
+
 
 module.exports = router;
