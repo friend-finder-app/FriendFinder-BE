@@ -9,6 +9,7 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "google-distance": "^1.0.1",
     "google-distance-matrix": "^1.1.1",
     "helmet": "^3.18.0",
     "jsonwebtoken": "^8.5.1",
