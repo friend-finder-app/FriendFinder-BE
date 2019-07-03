@@ -200,6 +200,26 @@ router.get('/match/people', mw.protectedRoute, async (req, res) => {
 
 })
 
+router.get('/getAllFriends/friends',mw.protectedRoute, async (req, res) => {
+  try{
+    let user = await Users.findById(req.user_id)
+    res.status(200).json(user.friends)
+  }
+  catch (error) {
+    console.log(error)
+  }
+})
+
+router.get('/getAllFriendsRequests/friends',mw.protectedRoute, async (req, res) => {
+  try{
+    let user = await Users.findById(req.user_id)
+    res.status(200).json(user.friendRequest)
+  }
+  catch (error) {
+    console.log(error)
+  }
+})
+
 
 
 
