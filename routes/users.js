@@ -265,6 +265,19 @@ router.put("/:id/acceptfriend", mw.protectedRoute, async (req, res) => {
   }
 });
 
+router.post(':id/addfriend', mw.protectedRoute, async (req, res) => {
+  try {
+    console.log("start");
+    const otherUser = await Users.findById(req.params.id);
+    const loggedInUser = await Users.findById(req.user_id);
+    loggedInUser.friendRequest.push(otherUser._id)
+    res.status(200).json({message:'success'})
+ }
+})
+
+
+
+
 /**
  * Method: MATCH
  * Endpoint: /api/users/match
