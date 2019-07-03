@@ -193,9 +193,11 @@ router.patch("/:id", mw.protectedRoute, async (req, res) => {
  */
 
 router.get('/match/people', mw.protectedRoute, async (req, res) => {
-  
+    const {hobbies,distance} = req.body;
+    const arrayOfString = hobbies.split(',')
+    console.log('arrayOfString ',arrayOfString)
     const loggedInUser = await Users.findById(req.user_id)
-    let users = await Users.find({ hobbies: { "$in": ["read"] } } )
+    let users = await Users.find({ hobbies: { "$in": arrayOfString } } )
 
     const updatedDistance = users.map( user => {
       return new Promise((resolve,reject) => {
@@ -222,7 +224,7 @@ router.get('/match/people', mw.protectedRoute, async (req, res) => {
     console.log('updated distance before promise ', updatedDistance)
     Promise.all(updatedDistance)
     .then(users => {
-      let filter = users.filter(user => { return user.distance <= 50 })
+      let filter = users.filter(user => { return user.distance <= distance })
       console.log(filter)
       res.status(200).json(filter)
     })
@@ -265,7 +267,8 @@ router.put("/:id/acceptfriend", mw.protectedRoute, async (req, res) => {
   }
 });
 
-router.post(':id/addfriend', mw.protectedRoute, async (req, res) => {
+router.post('/:id/addfriend', mw.protectedRoute, async (req, res) => {
+  console.log('does it hit this add friend endpoint')
   try {
     console.log("start");
     const otherUser = await Users.findById(req.params.id);
