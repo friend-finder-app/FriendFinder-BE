@@ -1,9 +1,8 @@
 const express = require("express");
 const mw = require("../middleware");
 const multer = require("multer");
-
-const googleDistance = require("google-distance-matrix");
-
+const googleDistance = require('google-distance')
+googleDistance.apiKey = 'AIzaSyAyKzkUTs_LU1DM1_keBv0CMtjMpP-boMQ';
 
 const router = express.Router();
 
@@ -192,18 +191,49 @@ router.patch("/:id", mw.protectedRoute, async (req, res) => {
  * Returns: Removes the specified user from the database
  * Middleware: `protectedRoute` checks to see if client sends token in the header
  */
-router.get('/match/people', mw.protectedRoute, async (req, res) => {
-  try {
 
-    let users = await Users.find({ hobbies: { "$in": ["read"] } })
-    res.status(200).json(users)
-  }
-  catch (error) {
-    console.log(error)
-  }
+router.get('/match/people', mw.protectedRoute, async (req, res) => {
+  
+    const loggedInUser = await Users.findById(req.user_id)
+    let users = await Users.find({ hobbies: { "$in": ["read"] } } )
+
+    const updatedDistance = users.map( user => {
+      return new Promise((resolve,reject) => {
+         googleDistance.get(
+          {
+            origin: `${loggedInUser.city},${loggedInUser.state}`,
+            destination: `${user.city},${user.state}`,
+            // mode: 'driving',
+            units: 'imperial'
+          },
+           function(err, data) {
+            if (err) reject(err)
+
+            console.log('calculated distance ',data.distance);
+            const test = data.distance.split('.')         
+            resolve({...user._doc, distance :test[0]})
+
+        });
+
+
+    })
+      })      
+      
+    console.log('updated distance before promise ', updatedDistance)
+    Promise.all(updatedDistance)
+    .then(users => {
+      let filter = users.filter(user => { return user.distance <= 50 })
+      console.log(filter)
+      res.status(200).json(filter)
+    })
+    .catch(error => console.log(error))      
 
 })
 
+
+
+// router.get('/getAllFriends/friends', mw.protectedRoute, async (req, res) => {
+//   try {
 router.put("/:id/acceptfriend", mw.protectedRoute, async (req, res) => {
   console.log("hitt here");
   try {
@@ -242,14 +272,14 @@ router.put("/:id/acceptfriend", mw.protectedRoute, async (req, res) => {
  * Returns: Removes the specified user from the database
  * Middleware: `protectedRoute` checks to see if client sends token in the header
  */
-router.get("/match/people", mw.protectedRoute, async (req, res) => {
-  try {
-    let users = await Users.find({ hobbies: { $in: ["read"] } });
-    res.status(200).json(users);
-  } catch (error) {
-    console.log(error);
-  }
-});
+// router.get("/match/people", mw.protectedRoute, async (req, res) => {
+//   try {
+//     let users = await Users.find({ hobbies: { $in: ["read"] } });
+//     res.status(200).json(users);
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
 
 router.get("/getAllFriends/friends", mw.protectedRoute, async (req, res) => {
   try {
@@ -273,26 +303,24 @@ router.get(
   }
 );
 
-router.get('/getAllFriends/friends',mw.protectedRoute, async (req, res) => {
-  try{
-    let user = await Users.findById(req.user_id)
-    res.status(200).json(user.friends)
-  }
-  catch (error) {
-    console.log(error)
-  }
-})
+// router.get('/getAllFriends/friends',mw.protectedRoute, async (req, res) => {
+//   try{
+//     let user = await Users.findById(req.user_id)
+//     res.status(200).json(user.friends)
+//   }
+//   catch (error) {
+//     console.log(error)
+//   }
+// })
 
-router.get('/getAllFriendsRequests/friends',mw.protectedRoute, async (req, res) => {
-  try{
-    let user = await Users.findById(req.user_id)
-    res.status(200).json(user.friendRequest)
-  }
-  catch (error) {
-    console.log(error)
-  }
-})
-
-
+// router.get('/getAllFriendsRequests/friends', mw.protectedRoute, async (req, res) => {
+//   try {
+//     let user = await Users.findById(req.user_id)
+//     res.status(200).json(user.friendRequest)
+//   }
+//   catch (error) {
+//     console.log(error)
+//   }
+// })
 
 module.exports = router;
