@@ -273,6 +273,10 @@ router.post(':id/addfriend', mw.protectedRoute, async (req, res) => {
     loggedInUser.friendRequest.push(otherUser._id)
     res.status(200).json({message:'success'})
  }
+ catch (err) {
+  console.log("error here");
+  err;
+}
 })
 
 
