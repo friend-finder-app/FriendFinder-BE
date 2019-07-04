@@ -2,6 +2,7 @@ const express = require("express");
 const mw = require("../middleware");
 const multer = require("multer");
 const googleDistance = require('google-distance')
+const mongoose = require('mongoose');
 googleDistance.apiKey = 'AIzaSyAyKzkUTs_LU1DM1_keBv0CMtjMpP-boMQ';
 
 const router = express.Router();
@@ -77,7 +78,7 @@ router.post(
         // imageName: req.body.imageName,
         // imageData: req.file.path
       });
-      console.log(req.body);
+      // console.log(req.body);
 
       // Checks database for existing email address returns error if there is an email
       const email = await Users.findOne({ email: req.body.email });
@@ -146,7 +147,7 @@ router.get("/currentUser", mw.protectedRoute, async (req, res) => {
   try {
     const data = await Users.findById(req.user_id);
     // const data = await Users.findById(req.user_id, 'hobbies')
-    console.log('data ',data)
+    // console.log('data ',data)
     res.status(200).json(data);
   } catch (err) {
     res.status(500).json(err, "Internal Server Error!");
@@ -197,7 +198,7 @@ router.patch("/:id", mw.protectedRoute, async (req, res) => {
 router.get('/match/people', mw.protectedRoute, async (req, res) => {
     const {hobbies,distance} = req.body;
     const arrayOfString = hobbies.split(',')
-    console.log('arrayOfString ',arrayOfString)
+    // console.log('arrayOfString ',arrayOfString)
     const loggedInUser = await Users.findById(req.user_id)
     let users = await Users.find({ hobbies: { "$in": arrayOfString } } )
 
@@ -213,7 +214,7 @@ router.get('/match/people', mw.protectedRoute, async (req, res) => {
            function(err, data) {
             if (err) reject(err)
 
-            console.log('calculated distance ',data.distance);
+            // console.log('calculated distance ',data.distance);
             const test = data.distance.split('.')         
             resolve({...user._doc, distance :test[0]})
 
@@ -239,28 +240,28 @@ router.get('/match/people', mw.protectedRoute, async (req, res) => {
 // router.get('/getAllFriends/friends', mw.protectedRoute, async (req, res) => {
 //   try {
 router.put("/:id/acceptfriend", mw.protectedRoute, async (req, res) => {
-  console.log("hitt here");
+  // console.log("hitt here");
   try {
-    console.log("start");
+    // console.log("start");
     const otherUser = await Users.findById(req.params.id);
     const loggedInUser = await Users.findById(req.user_id);
-    console.log(loggedInUser.friendRequest, "user fr request");
+    // console.log(loggedInUser.friendRequest, "user fr request");
     const checkFriendRequest = loggedInUser.friendRequest.filter((e, i) => {
       return e._id === otherUser._id;
     });
 
     let newfrendRequest = [...checkFriendRequest];
-    console.log(checkFriendRequest, "check friend request");
+    // console.log(checkFriendRequest, "check friend request");
     loggedInUser.friendRequest = newfrendRequest;
-    console.log(loggedInUser.friendRequest);
+    // console.log(loggedInUser.friendRequest);
     loggedInUser.friends.push(otherUser);
     otherUser.friends.push(loggedInUser);
     loggedInUser.save();
     otherUser.save();
-    console.log("----- testing---- ");
+    // console.log("----- testing---- ");
 
-    console.log(loggedInUser.friendsRequest, "friend request list");
-    console.log(loggedInUser.friends, "friends list");
+    // console.log(loggedInUser.friendsRequest, "friend request list");
+    // console.log(loggedInUser.friends, "friends list");
 
     res.status(200).json({ msg: "success" });
   } catch (err) {
@@ -272,7 +273,7 @@ router.put("/:id/acceptfriend", mw.protectedRoute, async (req, res) => {
 router.post('/:id/sendFriendRequest', mw.protectedRoute, async (req, res) => {
   console.log('does it hit this add friend endpoint')
   try {
-    console.log("start");
+    // console.log("start");
     const otherUser = await Users.findById(req.params.id);
     const loggedInUser = await Users.findById(req.user_id);
     otherUser.friendRequest.push(loggedInUser)
@@ -285,7 +286,59 @@ router.post('/:id/sendFriendRequest', mw.protectedRoute, async (req, res) => {
 }
 })
 
+// mongoose.Schema.ObjectId.get(v => v != null ? v.toString() : v);
 
+router.delete('/:id/rejectFriendRequest', mw.protectedRoute, async (req, res) => {
+  console.log('does it hit this rejectFriendRequest endpoint')
+  try {
+    console.log("rejectFriendRequest");
+    const otherUser = await Users.findById(req.params.id);
+    const loggedInUser = await Users.findById(req.user_id);
+    // mongoose.Types.ObjectId('578df3efb618f5141202a196')
+    // console.log('id for the user to be rejected ',typeof(mongoose.Types.ObjectId(req.params.id)))
+    // console.log('before delete the friend request ',typeof ObjectId(loggedInUser.friendRequest[0]._id).toString())
+    const newUsers = loggedInUser.friendRequest.filter(
+
+      friend => 
+          {console.log('type of friend id ',typeof(mongoose.Types.ObjectId(friend._id)))
+          console.log('type of the user to be rejected ',typeof(req.params.id))
+
+      (mongoose.Types.ObjectId(friend._id).toString() != req.params.id)})
+    console.log('newUsers after filter ',newUsers)
+    let newfrendRequest = [...newUsers];
+    loggedInUser.friendRequest = newfrendRequest;
+    console.log('users in friend request ',loggedInUser.friendRequest)
+    loggedInUser.save();
+    res.status(200).json({message:'reject friend Request success'})
+ }
+ catch (err) {
+  console.log("error here");
+  err;
+}
+})
+
+router.delete('/:id/deleteFriend', mw.protectedRoute, async (req, res) => {
+  console.log('does it hit this rejectFriendRequest endpoint')
+  try {
+    console.log("deleteFriend");
+    const otherUser = await Users.findById(req.params.id);
+    const loggedInUser = await Users.findById(req.user_id);
+
+    const newUsers = loggedInUser.friends.filter(friend => 
+      (friend._id === req.params.id))
+
+    console.log('newUsers after filter ',newUsers)
+    let newfriendRequest = [...newUsers];
+    loggedInUser.friends = newfriendRequest;
+    console.log('users in friend ',loggedInUser.friends)
+    loggedInUser.save();
+    res.status(200).json({message:'delete friend success'})
+ }
+ catch (err) {
+  console.log("error here");
+  err;
+}
+})
 
 
 /**
