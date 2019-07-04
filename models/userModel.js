@@ -80,7 +80,58 @@ const UserSchema = new Schema({
       user: {
         type: Schema.Types.ObjectId,
         ref: "User"
-      }
+      },
+      username: {
+    type: String,
+    required: false
+  },
+  email: {
+    type: String,
+    required: false
+  },
+  password: {
+    type: String,
+    required: false
+  },
+  phone: {
+    type: Number,
+    required: false
+  },
+  state: {
+    type: String,
+    required: false
+  },
+  city: {
+    type: String,
+    required: false
+  },
+  bio: {
+    type: String
+  },
+  firstName: {
+    type: String,
+    required: false
+  },
+  lastName: {
+    type: String,
+    required: false
+  },
+  age: {
+    type: Number,
+    required: false
+  },
+  dateOfBirth: {
+    type: Date,
+    required: false
+  },
+  hobbies: {
+    type: [String]
+  },
+  distance: {
+    type: String,
+    default:''
+  },
+   images: [],
     }
   ],
   friends: [
@@ -88,16 +139,120 @@ const UserSchema = new Schema({
       user: {
         type: Schema.Types.ObjectId,
         ref: "User"
-      }
+      },
+      username: {
+    type: String,
+    required: false
+  },
+  email: {
+    type: String,
+    required: false
+  },
+  password: {
+    type: String,
+    required: false
+  },
+  phone: {
+    type: Number,
+    required: false
+  },
+  state: {
+    type: String,
+    required: false
+  },
+  city: {
+    type: String,
+    required: false
+  },
+  bio: {
+    type: String
+  },
+  firstName: {
+    type: String,
+    required: false
+  },
+  lastName: {
+    type: String,
+    required: false
+  },
+  age: {
+    type: Number,
+    required: false
+  },
+  dateOfBirth: {
+    type: Date,
+    required: false
+  },
+  hobbies: {
+    type: [String]
+  },
+  distance: {
+    type: String,
+    default:''
+  },
+   images: [],
     }
+    
   ],
   matched: [
     {
       user: {
         type: Schema.Types.ObjectId,
         ref: "User"
-      }
+      },
+      username: {
+    type: String,
+    required: false
+  },
+  email: {
+    type: String,
+    required: false
+  },
+  password: {
+    type: String,
+    required: false
+  },
+  phone: {
+    type: Number,
+    required: false
+  },
+  state: {
+    type: String,
+    required: false
+  },
+  city: {
+    type: String,
+    required: false
+  },
+  bio: {
+    type: String
+  },
+  firstName: {
+    type: String,
+    required: false
+  },
+  lastName: {
+    type: String,
+    required: false
+  },
+  age: {
+    type: Number,
+    required: false
+  },
+  dateOfBirth: {
+    type: Date,
+    required: false
+  },
+  hobbies: {
+    type: [String]
+  },
+  distance: {
+    type: String,
+    default:''
+  },
+   images: [],
     }
+    
   ]
 });
 
