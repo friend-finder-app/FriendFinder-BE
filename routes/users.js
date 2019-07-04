@@ -145,6 +145,8 @@ router.get("/", mw.protectedRoute, async (req, res) => {
 router.get("/currentUser", mw.protectedRoute, async (req, res) => {
   try {
     const data = await Users.findById(req.user_id);
+    // const data = await Users.findById(req.user_id, 'hobbies')
+    console.log('data ',data)
     res.status(200).json(data);
   } catch (err) {
     res.status(500).json(err, "Internal Server Error!");
@@ -251,8 +253,8 @@ router.put("/:id/acceptfriend", mw.protectedRoute, async (req, res) => {
     console.log(checkFriendRequest, "check friend request");
     loggedInUser.friendRequest = newfrendRequest;
     console.log(loggedInUser.friendRequest);
-    loggedInUser.friends.push(otherUser._id);
-    otherUser.friends.push(loggedInUser._id);
+    loggedInUser.friends.push(otherUser);
+    otherUser.friends.push(loggedInUser);
     loggedInUser.save();
     otherUser.save();
     console.log("----- testing---- ");
@@ -267,14 +269,15 @@ router.put("/:id/acceptfriend", mw.protectedRoute, async (req, res) => {
   }
 });
 
-router.post('/:id/addfriend', mw.protectedRoute, async (req, res) => {
+router.post('/:id/sendFriendRequest', mw.protectedRoute, async (req, res) => {
   console.log('does it hit this add friend endpoint')
   try {
     console.log("start");
     const otherUser = await Users.findById(req.params.id);
     const loggedInUser = await Users.findById(req.user_id);
-    loggedInUser.friendRequest.push(otherUser._id)
-    res.status(200).json({message:'success'})
+    otherUser.friendRequest.push(loggedInUser)
+    otherUser.save();
+    res.status(200).json({message:'send friend Request success'})
  }
  catch (err) {
   console.log("error here");
