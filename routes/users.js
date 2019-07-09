@@ -227,11 +227,24 @@ router.get('/match/people', mw.protectedRoute, async (req, res) => {
     console.log('updated distance before promise ', updatedDistance)
     Promise.all(updatedDistance)
     .then(users => {
-      let filter = users.filter(user => { return user.distance <= distance })
-      console.log(filter)
-      res.status(200).json(filter)
+      let filter = users.filter(user => { return user.distance <= distance})
+      let filterUser = filter.filter(user => { 
+        console.log('user id ', user._id)
+        console.log('loggedInUser id ', loggedInUser._id)
+
+        return user._id !== loggedInUser._id
+      })
+      // console.log('filterUser ',filterUser)
+      res.status(200).json(filterUser)
     })
-    .catch(error => console.log(error))      
+    .catch(error => {
+      console.log(error)
+      res.status(500).json({message:'not able to retrieve the match people'})
+    }
+      )  
+
+  
+         
 
 })
 
