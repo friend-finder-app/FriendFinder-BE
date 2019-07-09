@@ -17,16 +17,16 @@ server.use(express.json());
 
 //Setting up headers for img-uploading..
 //Dont actually know what it does tbh
-server.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Origin, X-Requested-With, Content-Type, Accept"
-  );
-  res.header("Access-Control-Allow-Credentials", true);
-  res.header("Access-Control-Allow-Methods", "*"); // enables all the methods to take place
-  return next();
-});
+// server.use((req, res, next) => {
+//   res.setHeader("Access-Control-Allow-Origin", "*");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   res.header("Access-Control-Allow-Credentials", true);
+//   res.header("Access-Control-Allow-Methods", "*"); // enables all the methods to take place
+//   return next();
+// });
 
 // Connect to MongoDB
 mongoose
