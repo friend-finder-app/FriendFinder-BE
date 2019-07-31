@@ -1,3 +1,3 @@
 module.exports = {
-  mongoURI: `mongodb+srv://mwindu:MUt9kZFXjIHi5yHn@cluster0-scpsr.mongodb.net/FriendFinder?retryWrites=true&w=majority`
+  mongoURI: `mongodb+srv://diaz4674:Cc3058366@cluster0-pcqf4.gcp.mongodb.net/Friends?retryWrites=true&w=majority`
 };
