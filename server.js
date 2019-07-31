@@ -31,7 +31,7 @@ server.use(express.json());
 
 // Connect to MongoDB
 mongoose
-  .connect(process.env.MONGODB_URI || db, { useNewUrlParser: true })
+  .connect(process.env.MONGODB_URI, { useNewUrlParser: true })
   .then(() => {
     console.log("MongoDB Connected");
   })
